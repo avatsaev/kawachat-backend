@@ -19,7 +19,7 @@ function tumbler(frq, event, client, params){
 
     users.forEach(function(user){
       if(user.client_id != client.id){
-        chat.socket.sockets.sockets[user.client_id].emit("chat", user.username, params.msg);
+        chat.socket.sockets.sockets[user.client_id].emit("chat", params.usr, params.msg);
       }
     });
 

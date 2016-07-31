@@ -32,7 +32,7 @@ chat.socket = socket;
 socket.on("connection", function (client) {
 
   client.on("join", function(data){
-    console.log(data);
+
     var userData = data;
 
     user = {}
@@ -99,11 +99,12 @@ socket.on("connection", function (client) {
 
     inData["frq"]= escapeHtml(inData["frq"]).substring(0, 32);
     inData["msg"]= escapeHtml(inData["msg"]).substring(0, 512);
+    inData["usr"]= escapeHtml(inData["usr"]).substring(0, 64);
 
     console.dir("frequency: "+inData["frq"]);
     console.dir("message: "+inData["msg"]);
 
-    tumbler(inData["frq"], "chat", client, {msg:inData["msg"] });
+    tumbler(inData["frq"], "chat", client, {msg:inData["msg"], usr: inData["usr"] });
 
 
   });
