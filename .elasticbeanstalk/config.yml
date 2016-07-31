@@ -1,6 +1,6 @@
 branch-defaults:
   master:
-    environment: kchat-backend-dev
+    environment: kchat-backend-dev2
 global:
   application_name: kchat-backend
   default_ec2_keyname: aws-eb
