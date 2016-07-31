@@ -86,7 +86,7 @@ socket.on("connection", function (client) {
   });
 
   client.on("send", function(data){
-    //console.dir(""+data);
+    console.log(""+data);
     if(chat.state=="halted"){
       client.emit("update", "ERROR: Server and frequency tumblers are halted...");
       return;
