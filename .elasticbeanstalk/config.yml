@@ -1,4 +1,6 @@
 branch-defaults:
+  default:
+    environment: kchat-backend-dev2
   master:
     environment: kchat-backend-dev2
 global:
