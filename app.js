@@ -2,6 +2,10 @@ var port = process.env.PORT || 3002;
 var env = process.env.NODE_ENV || "development";
 
 var http = require('http')
+var chat  = require("./app/chat")
+var tumbler = require("./app/tumbler")
+var Room = require("./app/room")
+
 
 var _ = require("lodash");
 // Send index.html to all requests
@@ -10,23 +14,12 @@ var app = http.createServer(function(req, res) {
     res.end("");
 });
 
-var chat  = require("./app/chat")
-var tumbler = require("./app/tumbler")
-
-
 
 // Socket.io server listens to our app
 var socket = require('socket.io').listen(app);
 socket.set( 'origins','*:*')
 
-// Emit welcome message on connection
-socket.on('connection', function(socket) {
-    // Use socket to communicate with this particular client only, sending it it's own id
-    socket.emit('welcome', { message: 'Welcome!', id: socket.id });
-});
-
 chat.socket = socket;
-
 
 
 socket.on("connection", function (client) {
@@ -48,8 +41,6 @@ socket.on("connection", function (client) {
     user.username = escapeHtml(userData["username"]).substring(0, 20);
     user.frq = escapeHtml(userData["frq"]).substring(0, 32);
 
-    console.dir("frequency: "+user.frq);
-    console.dir("usr: "+user.username);
 
 
     if(user.frq == "haltOff") chat.state="ready";
@@ -72,8 +63,9 @@ socket.on("connection", function (client) {
 
     //chat.people[client.id] = userData;
     chat.people.push(user)
-
-    console.log(chat.people)
+    r = chat.add_room(user.frq)
+    console.log("room: ", r.people());
+    console.log('people: ', chat.people);
 
     client.emit("update", "Welcome. You have connected to the server on the frequency "+user.frq+" MHz");
 
@@ -86,7 +78,7 @@ socket.on("connection", function (client) {
   });
 
   client.on("send", function(data){
-    console.log(""+data);
+
     if(chat.state=="halted"){
       client.emit("update", "ERROR: Server and frequency tumblers are halted...");
       return;
@@ -101,8 +93,6 @@ socket.on("connection", function (client) {
     inData["msg"]= escapeHtml(inData["msg"]).substring(0, 512);
     inData["usr"]= escapeHtml(inData["usr"]).substring(0, 64);
 
-    console.dir("frequency: "+inData["frq"]);
-    console.dir("message: "+inData["msg"]);
 
     tumbler(inData["frq"], "chat", client, {msg:inData["msg"], usr: inData["usr"] });
 
@@ -124,12 +114,13 @@ socket.on("connection", function (client) {
 
 
 function escapeHtml(text) {
-  console.log("REPLACE: "+text);
+
   if(text==undefined){
-    return undefined;
+    return;
   }
+
   return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 }
 
-console.log("----------server running on port "+port+" -----------------")
+console.log("---------- server running on port "+port+" -----------------")
 app.listen(port);
