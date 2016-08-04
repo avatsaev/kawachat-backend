@@ -16,7 +16,7 @@ var app = http.createServer(function(req, res) {
 
   if(req.url == "/stats.json"){
     res.writeHead(200, {'Content-Type': 'application/json'});
-    response = chat.as_json();
+    const response = chat.as_json();
     res.end(JSON.stringify(response));
   }else{
     res.writeHead(200, {'Content-Type': 'text/html'});
