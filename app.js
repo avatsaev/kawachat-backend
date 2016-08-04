@@ -34,6 +34,8 @@ chat.socket = socket;
 
 socket.on("connection", function (client) {
 
+  console.log("incoming connection...");
+
   client.on("join", function(data){
 
 
