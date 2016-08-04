@@ -1,3 +1,6 @@
+"use strict";
+const _ = require("lodash");
+let chat  = require("./chat");
 
 class Room {
 

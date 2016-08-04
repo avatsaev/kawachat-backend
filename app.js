@@ -1,14 +1,14 @@
-port = process.env.PORT || 3002;
-env = process.env.NODE_ENV || "development";
+"use strict";
 
-http = require('http');
-_ = require("lodash");
+const port = process.env.PORT || 3002;
+const env = process.env.NODE_ENV || "development";
 
-utils = require("./app/utils");
-Room = require("./app/room");
-User = require("./app/user");
-chat  = require("./app/chat");
-tumbler = require("./app/tumbler");
+const http = require('http');
+const _ = require("lodash");
+
+let chat  = require("./app/chat");
+const utils = require("./app/utils");
+const tumbler = require("./app/tumbler");
 
 
 // Send index.html to all requests
@@ -63,7 +63,7 @@ socket.on("connection", function (client) {
     data["msg"]= utils.escape_html(data["msg"]).substring(0, 512);
     data["usr"]= utils.escape_html(data["usr"]).substring(0, 64);
 
-    user = chat.get_user(client.id);
+    let user = chat.get_user(client.id);
 
     tumbler(data["frq"], "chat",  {msg: data["msg"], usr: user });
 
@@ -71,13 +71,13 @@ socket.on("connection", function (client) {
 
   client.on("disconnect", function(){
 
-    user = chat.get_user(client.id);
+    let user = chat.get_user(client.id);
 
     if(user){
 
       console.log("User disconecting from frequency: ", user.frq);
 
-      room = user.get_room();
+      let room = user.get_room();
 
       tumbler(user.frq, "update", {
         msg: (`${user.username} left the frequency ${user.frq}`)

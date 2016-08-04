@@ -1,7 +1,11 @@
-let chat  = require("./chat")
-const _ = require("lodash")
+"use strict";
+
+let chat  = require("./chat");
 
 function tumbler(frq, event, params){
+
+  let room;
+  let users;
 
   if(frq){
     room = chat.get_room(frq);
@@ -24,6 +28,7 @@ function tumbler(frq, event, params){
   if (event=="error"){
     params.client.emit("err", {errno: params.errno, msg: params.msg})
   }
+
 }
 
 module.exports = tumbler
